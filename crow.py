@@ -5,9 +5,9 @@ import json
 from urllib.request import urlopen
 
 def get_videoName(video, video_subject):
-    return '[vlive] [' + video.get('encodingOption').get('name') + "] " + video_subject + ".mp4"
+    return '../izonestreaming/public/videos/hd/'+'[VLIVE] [' + video.get('encodingOption').get('name') + "] " + video_subject + ".mp4"
 
-adress = input("vlive 주소를 입력하십시오 : ")
+adress = input("vlive adress : ")
 html = requests.get(adress).text
 soup = BeautifulSoup(html, 'html.parser')
 script_tag = soup.find_all('script')[5].text
