@@ -9,20 +9,31 @@ from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
-
+from selenium.webdriver.chrome.options import Options
+import pymysql
+j=84
 def get_videoName(video, video_subject):
-    return '../izone/public/videos/hd/'+'[VLIVE] [' + video.get('encodingOption').get('name') + "] " + video_subject + ".mp4"
+    return '../izone/public/videos/hd/[VLIVE] [' + video.get('encodingOption').get('name') + "] " + str(j) + ".mp4"
+def get__videoName(video, video_subject):
+    return '[VLIVE] [' + video.get('encodingOption').get('name') + "] " + video_subject + ".mp4"
 
 dd= open("temp.txt","r")
-
+# db = pymysql.connect(host='127.0.0.1', port=3306, user='choigod1023', passwd='jjang486', db='choigod1023', charset='utf8')
+# cursor = db.cursor()
 txtdate = dd.read()
+# options = Options()
+# options.add_argument("--headless")
+# options.add_argument("--no-sandbox")
+# options.add_argument("--disable-dev-shm-usage")
 txtdate = datetime.datetime.strptime(txtdate,"%Y-%m-%d %H:%M:%S")
 driver = webdriver.Chrome('./chromedriver.exe')
+#, chrome_options=options)
+
 driver.get('https://channels.vlive.tv/C1B7AF/video')
 time.sleep(3)
 html = driver.execute_script('return document.body.innerHTML')
 soup = BeautifulSoup(html, 'html.parser')
-table = driver.find_element_by_xpath('//*[@id="container"]/channel/div/video-list/div/div/ul/li[1]/video-list-item/div/div/span[2]')
+table = driver.find_element_by_xpath('//*[@id="container"]/channel/div/video-list/div/div/ul/li[1]/video-list-item/div/a/div[2]/div/strong')
 table_data = table.text
 print(table_data)
 if '분 전' in table_data:
@@ -89,6 +100,11 @@ if '시간 전' in table_data:
                     res_data = res.read()
                     with open(get_videoName(video, video_subject).replace('[', '(').replace(']', ')').replace('*', ''), 'wb') as f:
                         f.write(res_data)
+else:
+    exit()
+string = get__videoName(video, video_subject).replace('[', '(').replace(']', ')').replace('*', '')
+sql = "INSERT INTO vlive(id, name) VALUES(%s, %s)"
+# cursor.execute(sql, (j, string)) 
 ww = open("temp.txt","w")
 ww.write(datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S'))
 exit()
