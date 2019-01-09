@@ -14,8 +14,7 @@ for i in range(0,limit):
     cursor.execute(sql)
     row2 = cursor.fetchone()
     jso = {"id":row2[0],"title":row2[1]}
-    message = json.dumps(jso, ensure_ascii=False)
-    f.write(message.encode("EUC-KR"))
+    f.write(json.dumps(jso, ensure_ascii=False).encode("EUC-KR"))
 f.close()
 
 

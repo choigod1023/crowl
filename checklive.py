@@ -11,7 +11,7 @@ options = Options()
 options.add_argument("--headless")
 options.add_argument("--no-sandbox")
 options.add_argument("--disable-dev-shm-usage")
-driver = webdriver.Chrome('./chromedriver', chrome_options=options)
+driver = webdriver.Chrome('/home/choigod1023/vlivecrowling/chromedriver', chrome_options=options)
 
 driver.get('https://channels.vlive.tv/C1B7AF/video')
 time.sleep(3)
@@ -27,7 +27,7 @@ try :
     url = url.replace("/video/","/embed/")
     url2 = url.split('?')
     url =url2[0]
-    print(url)
+    driver.quit()
 except : 
     driver.find_element_by_xpath('//*[@id="container"]/channel/div/video-list/div/div/ul/li[1]/video-list-item/div/a').click()
     time.sleep(1)
@@ -35,8 +35,7 @@ except :
     url = url.replace("/video/","/embed/")
     url2 = url.split('?')
     url =url2[0]
-    print(url)
+    driver.quit()
 f = open("/home/choigod1023/izone/url.txt","w")
 f.write(url)
 f.close()
-driver.close()  

@@ -1,3 +1,4 @@
+
 from bs4 import BeautifulSoup
 import requests
 import re
@@ -31,7 +32,7 @@ options.add_argument("--no-sandbox")
 options.add_argument("--disable-dev-shm-usage")
 driver = webdriver.Chrome('/home/choigod1023/vlivecrowling/chromedriver', chrome_options=options)
 
-for i in range(2, 3):
+for i in range(1, 2):
 
     driver.get('https://channels.vlive.tv/C1B7AF/video')
     time.sleep(3)
@@ -63,42 +64,45 @@ for i in range(2, 3):
     video_data = json.loads(video_html.text)
     video_list = video_data.get('videos').get('list')
     video_subject = video_data.get('meta').get('subject')
+
+    string = get__videoName(video_list[0], video_subject,'360P').replace('[', '(').replace(']', ')').replace('*', '')                              
+    sql = "SELECT COUNT(*) FROM vlive where NAME=%s"                              
+    cursor.execute(sql, string)                                                   
+    row3 = cursor.fetchone()
+
     string = get__videoName(video_list[0], video_subject,'720P').replace(
         '[', '(').replace(']', ')').replace('*', '')
     sql = "SELECT COUNT(*) FROM vlive where NAME=%s"
     cursor.execute(sql, string)
     rows = cursor.fetchone()
+    print(rows[0])
+
     if(int(rows[0]) == 0):
         string = get__videoName(video_list[0], video_subject,'1080P').replace(
         '[', '(').replace(']', ')').replace('*', '')
     cursor.execute(sql, string)
-    rows = cursor.fetchone()    
-    sql = "SELECT COUNT(*) FROM vlive where ID=%s"
-    cursor.execute(sql, j)
-    row2 = cursor.fetchone()
-    
-    print(rows[0])
-    if not int(rows[0]) and not int(row2[0]):
+    rows = cursor.fetchone()
+    if not int(rows[0]) and not int(row3[0]):
         print('writing')
         for video in video_list:
-            if video.get('encodingOption').get('name') == '720P' or video.get('encodingOption').get('name') == '1080P':
+            if  video.get('encodingOption').get('name') == '720P' or video.get('encodingOption').get('name') == '1080P':
                 print('entering')
                 with urlopen(video.get('source')) as res:
                     res_data = res.read()
                     print('reading')
                     with open(get_videoName(video, video_subject).replace('[', '(').replace(']', ')').replace('*', ''), 'wb') as f:
                         f.write(res_data)
-                    print('writting')
-                    sql = "INSERT INTO vlive(id, name) VALUES(%s, %s)"
-                    cursor.execute(sql, (j, string))
-                    dd = open("/home/choigod1023/vlivecrowling/temp.txt", "w")
-                    j = j+1
-                    print(j)
-                    dd.write(str(j))
-                    db.commit()
                     break
-    
 
+        sql = "INSERT INTO vlive(id, name) VALUES(%s, %s)"
+        cursor.execute(sql, (j, string))
+        dd = open("/home/choigod1023/vlivecrowling/temp.txt", "w")
+        j = j+1
+        print(j)
+        dd.write(str(j))
+        db.commit()
+        driver.quit()
+    else:
+        driver.quit()
 print('exit')
 db.close()
-driver.quit()

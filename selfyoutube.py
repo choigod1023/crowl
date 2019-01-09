@@ -36,8 +36,10 @@ if int(naver):
     i = rows[0]
     i = int(i[0])+1
     print(i)
-    os.system('youtube-dl -o '+"/home/choigod1023/izone/public/videos/hd/" +
-                    "'(CAM)"+str(i)+".mp4' "+source_+" -f AVC_1080P_1920_5120_192")
+    try:
+        os.system('youtube-dl -o '+"/home/choigod1023/izone/public/videos/hd/" +"'(CAM)"+str(i)+".mp4' "+source_+" -f AVC_1080P_1920_5120_192")
+    except:
+        os.system('youtube-dl -o '+"/home/choigod1023/izone/public/videos/hd/" +"'(CAM)"+str(i)+".mp4' "+source_+" -f AVC_720P_1280_2048_192_B")
     sql = "INSERT INTO youtube(id,name) VALUES(%s, %s)"
     cursor.execute(sql, (i, source))
     db.commit()
@@ -54,11 +56,9 @@ if int(naver)==0:
         i = int(i[0])+1
         print(i)
         try:
-            os.system('youtube-dl -o '+"/home/choigod1023/izone/public/videos/hd/" +
-                    "'(CAM)"+str(i)+"' "+source_+" -f AVC_1080P_1920_5120_192")
+            os.system('youtube-dl -o '+"/home/choigod1023/izone/public/videos/hd/" +"'(CAM)"+str(i)+".mp4' "+source_+" -f 137")
         except:
-            os.system('youtube-dl -o '+"/home/choigod1023/izone/public/videos/hd/" +
-                    "'(CAM)"+str(i)+"' "+source_+" -f 22")
+            os.system('youtube-dl -o '+"/home/choigod1023/izone/public/videos/hd/" +"'(CAM)"+str(i)+"' "+source_+" -f 22")
         sql = "INSERT INTO youtube(id,name) VALUES(%s, %s)"
         cursor.execute(sql, (i, source))
         db.commit()
