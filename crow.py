@@ -3,12 +3,21 @@ import requests
 import re
 import json
 from urllib.request import urlopen
-
+from selenium import webdriver
+from selenium.webdriver.common.by import By
+from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.support import expected_conditions as EC
+from selenium.webdriver.chrome.options import Options
+import time
 def get_videoName(video, video_subject):
-    return '../izonestreaming/public/videos/hd/'+'[VLIVE] [' + video.get('encodingOption').get('name') + "] " + video_subject + ".mp4"
+    return 'HI' + ".mp4"
 
 adress = input("vlive adress : ")
-html = requests.get(adress).text
+driver = webdriver.Chrome(
+    './chromedriver.exe')
+driver.get(adress)
+time.sleep(3)
+html = driver.execute_script('return document.body.innerHTML')
 soup = BeautifulSoup(html, 'html.parser')
 script_tag = soup.find_all('script')[5].text
 regex = "vlive.video.init(.+\s+.+\s+.+)"
