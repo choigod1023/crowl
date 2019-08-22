@@ -28,28 +28,34 @@ time.sleep(5)
 a = driver.find_element_by_xpath('//*[@id="contents"]/ytd-video-renderer[60]')
 ActionChains(driver).move_to_element(a).perform()
 time.sleep(5)
-for v in range(60, 161):
-    a = driver.find_element_by_xpath('//*[@id="contents"]/ytd-video-renderer['+str(v)+']')
-    ActionChains(driver).move_to_element(a).perform()
-    time.sleep(5)
-    v+=10
-for i in range(57, 161):
+a = driver.find_element_by_xpath('//*[@id="contents"]/ytd-video-renderer[80]')
+ActionChains(driver).move_to_element(a).perform()
+time.sleep(5)
+a = driver.find_element_by_xpath('//*[@id="contents"]/ytd-video-renderer[100]')
+ActionChains(driver).move_to_element(a).perform()
+time.sleep(5)
+a = driver.find_element_by_xpath('//*[@id="contents"]/ytd-video-renderer[120]')
+ActionChains(driver).move_to_element(a).perform()
+time.sleep(5)
+for i in range(1, 121):
     time.sleep(3)
     a = driver.find_element_by_xpath(
         '//*[@id="contents"]/ytd-video-renderer['+str(i)+']')
     ActionChains(driver).move_to_element(a).perform()
+    thumb = driver.find_element_by_xpath('//*[@id="contents"]/ytd-video-renderer['+str(i)+']/div/ytd-thumbnail/a/yt-img-shadow/img').get_attribute('src')
+    print(thumb)
     a.click()
     time.sleep(5)
     source = driver.current_url
-    os.system('youtube-dl -o '+"/home/choigod1023/izone/public/videos/hd/'(CAM)'"+str(i) +
-              '.mp4 '+source+' -f 137+251')
+    os.system('youtube-dl -o '+"'/home/choigod1023/vue express/backend/public/videos/hd/(CAM)"+str(i) +
+              ".mp4' "+source+' -f 137+251')
     html = driver.page_source
     soup = BeautifulSoup(html, 'html.parser')
     body = '(CAM)' + \
         soup.select('#container > h1 > yt-formatted-string')[0].get_text()
     print(body)
-    sql = "INSERT INTO youtube(id,name) VALUES(%s, %s)"
-    cursor.execute(sql, (i, body))
+    sql = "INSERT INTO youtube(id,name,thumb) VALUES(%s, %s,%s)"
+    cursor.execute(sql, (i, body,thumb))
     db.commit()
     driver.execute_script('window.history.go(-1)')
     a = driver.find_element_by_xpath(

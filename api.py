@@ -1,20 +1,38 @@
-import pymysql
-import json
-db = pymysql.connect(host='127.0.0.1', port=3306, user='choigod1023',
-                     passwd='jjang486', db='choigod1023', charset='utf8')
-cursor = db.cursor()
-sql = "SELECT COUNT(*) FROM vlive"
-cursor.execute(sql)
-row2 = cursor.fetchone()
-print(row2[0])
-limit = int(row2[0])-1
-f= open('./api.json',"a")
-for i in range(0,limit):
-    sql = 'select * from vlive order by id, name asc limit '+str(i)+',1'
-    cursor.execute(sql)
-    row2 = cursor.fetchone()
-    jso = {"id":row2[0],"title":row2[1]}
-    f.write(json.dumps(jso, ensure_ascii=False).encode("EUC-KR"))
-f.close()
+import random
+import time
+from selenium import webdriver
+from selenium.webdriver.common.keys import Keys
+driver = webdriver.Chrome('chromedriver.exe')
+import os
+import requests
+from urllib.parse import urlencode, quote_plus
+targeturl="https://www.google.com/recaptcha/api2/demo"
+apikey="4c7a580a6fe68ba1fa801dad9ba0550d"
 
+driver.get(targeturl)
+gk=driver.find_element_by_id("recaptcha-demo").get_attribute("data-sitekey")
+fmturl="http://2captcha.com/in.php?key={0}&method=userrecaptcha&googlekey={1}&pageurl={2}"
+url=fmturl.format(apikey,gk,quote_plus(targeturl))
+res=requests.get(url)
+sk=res.text.split("|")
 
+if sk[0]=="OK":
+    reqcomp=False
+    tkn=None
+    while not reqcomp:
+        fmturl="http://2captcha.com/res.php?key={0}&action=get&id={1}"
+        url=fmturl.format(apikey,sk[1])
+        res=requests.get(url)
+        if res.text!="CAPCHA_NOT_READY":
+            reqcomp=True
+            tkn=res.text
+        else:
+            print("waiting...")
+            time.sleep(5)
+    print(tkn)
+    driver.execute_script('document.getElementById("g-recaptcha-response").innerHTML="{0}";'.format(tkn.split("|")[1]))
+
+else:
+    print("failed")
+
+input()

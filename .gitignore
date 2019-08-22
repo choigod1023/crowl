@@ -1,2 +1,16 @@
 *.mp4
 chromedriver.exe
+*.py
+*.txt
+*.mkv
+*.zip
+*.xlsx
+*.log
+*.jpg
+*.ts
+*.mp3
+*.csv
+*.pickle
+*.gif
+*.spec
+www
